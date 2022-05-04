@@ -10,8 +10,13 @@ const PORT = process.env.PORT || 3001;
 
 const app = express();
 
+// makes public folder(in this case) a static resource - can now access front-end code
+// without having a specific server endpoint created for it
+app.use(express.static('public'));
+
 // parse incoming string or array data
 app.use(express.urlencoded({ extended: true }));
+
 // parse incoming JSON data
 app.use(express.json());
 
@@ -121,6 +126,25 @@ app.post('/api/animals', (req, res) => {
     }
 });
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+})
+
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+});
+
+// if undefined, go back to home page
+// * should always come last
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
+
+// should always be last
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}`);
 });
